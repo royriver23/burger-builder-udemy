@@ -179,3 +179,7 @@ const store = createStore(rootReducer);
 
 ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
 ```
+
+We could use Redux for everything, however, if you really want to keep the state where it belongs to and avoid propagating it through all components where it is not relevant, you have to think about where it makes sense to use Redux, such as data that is shared across all data.
+
+UI conditional rendering or form management are usually cases where Redux is not necessary.
