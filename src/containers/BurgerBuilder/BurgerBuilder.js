@@ -33,22 +33,14 @@ class BurgerBuilder extends Component {
 
   componentDidMount () {
     axios.get('/ingredientes.json')
-      .then(response => {
-        this.setState({ingredients: response.data});
-      })
-      .catch(error => {
-        this.setState({error: true});
-      });
+      .then(response => this.setState({ingredients: response.data}))
+      .catch(error => this.setState({error: true}))
   }
 
   updatePurchaseState (ingredients) {
     const sum = Object.keys(ingredients)
-      .map(igKey => {
-        return ingredients[igKey]
-      })
-      .reduce((sum, el) => {
-        return sum + el;
-      }, 0);
+      .map(igKey => ingredients[igKey])
+      .reduce((sum, el) => (sum + el), 0);
     this.setState({purchasable: sum > 0});
   }
 
@@ -129,10 +121,10 @@ class BurgerBuilder extends Component {
       );
       orderSummary = (
         <OrderSummary
-        price={this.state.totalPrice}
-        ingredients={this.state.ingredients}
-        purchaseCancelled={this.purchaseCancelHandler}
-        purchaseContinued={this.purchaseContinueHandler} />
+          price={this.state.totalPrice}
+          ingredients={this.state.ingredients}
+          purchaseCancelled={this.purchaseCancelHandler}
+          purchaseContinued={this.purchaseContinueHandler} />
       );
     }
     if (this.state.loading) {

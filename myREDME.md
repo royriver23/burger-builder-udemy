@@ -161,4 +161,21 @@ const AsyncNewPost = asyncComponent(() => {
 
 ## Redux
 
-State influences what you see on the screen
+* State influences what you see on the screen
+* Clear predictable process of updating state
+
+[Redux Inmutability](https://www.udemy.com/react-the-complete-guide-incl-redux/learn/v4/t/lecture/8303068?start=0)
+[Redux theory](https://www.udemy.com/react-the-complete-guide-incl-redux/learn/v4/t/lecture/8267738?start=0)
+```js
+import counterReducer from './store/reducers/counter';
+import resultReducer from './store/reducers/result';
+
+const rootReducer = combineReducers({
+  ctr: counterReducer,
+  res: resultReducer
+});
+
+const store = createStore(rootReducer);
+
+ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+```
