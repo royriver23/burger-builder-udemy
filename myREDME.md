@@ -1,10 +1,7 @@
-#### Passing params to functions when passing that function to other components
-:white_check_mark:
-```javascript
-onClick={this.switchNameHandler.bind(this, 'Other other name')}
-```
+# REACT/REDUX NOTES
 
-:no_entry_sign:
+#### Passing params to functions when passing that function to other components
+
 ```javascript
 onClick={() => this.switchNameHandler('Roy José!')}
 ```
@@ -52,7 +49,7 @@ becomes
     <h1>First Element</h1>
     <h1>Second Element</h1>
 </>
-```javascript
+```
 
 Behind the scenes, it does the same our Aux  component did.
 
@@ -70,20 +67,18 @@ this.setState((prevState, props) => {
 ```
 
 ---
-PropTypes: [Source](https://reactjs.org/docs/typechecking-with-proptypes.html)
+### PropTypes: [Source](https://reactjs.org/docs/typechecking-with-proptypes.html)
+
+**ref:** can only be used in stateful components. They can be used after render (componentDidMount or componentDidUpdate)
 
 `yarn add prop-types`
 
 ---
 
-**ref:** can only be used in stateful components. They can be used after render (componentDidMount or componentDidUpdate)
-
----
-
-State & Lifecycle: https://reactjs.org/docs/state-and-lifecycle.html
-PropTypes: https://reactjs.org/docs/typechecking-with-proptypes.html
-Higher Order Components: https://reactjs.org/docs/higher-order-components.html
-Refs: https://reactjs.org/docs/refs-and-the-dom.html
+- State & Lifecycle: https://reactjs.org/docs/state-and-lifecycle.html
+- PropTypes: https://reactjs.org/docs/typechecking-with-proptypes.html
+- Higher Order Components: https://reactjs.org/docs/higher-order-components.html
+- Refs: https://reactjs.org/docs/refs-and-the-dom.html
 
 ---
 
@@ -157,7 +152,8 @@ const AsyncNewPost = asyncComponent(() => {
 - ComponentDidMount
 - ComponentDidUpdate
 
----
+------
+------
 
 ## Redux
 
@@ -183,3 +179,74 @@ ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementB
 We could use Redux for everything, however, if you really want to keep the state where it belongs to and avoid propagating it through all components where it is not relevant, you have to think about where it makes sense to use Redux, such as data that is shared across all data.
 
 UI conditional rendering or form management are usually cases where Redux is not necessary.
+
+**Middleware:** functions or code in general you hook into a process which gets executed as part of that process without stopping it.
+
+## Applying Middleware
+
+- Import `applyMiddleware` function from redux package
+
+```js
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+```
+
+- Create the middleware code, in this case, a logger:
+
+```js
+const logger = store => {
+  return next => {
+    return action => {
+      console.log('[Middleware] Dispatching', action);
+      const result = next(action);
+      console.log('[Middleware] next state', store.getState());
+      return result;
+    }
+  }
+};
+```
+
+- Pass it in createStore function:
+
+```js
+const store = createStore(rootReducer, applyMiddleware(logger));
+```
+
+- Add Redux DevTools
+  - [Redux DevTools Chrome Extension](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd/related?hl=en)
+  - [Post-install](https://github.com/zalmoxisus/redux-devtools-extension#usage)
+
+---
+
+### Redux-Thunk
+This is required to run async code. Instead of returning the action, a function is returned.
+
+- `yarn add redux-thunk`
+- Add it as middleware
+- Actions Creators concept
+
+```js
+import thunk from 'redux-thunk';
+// ...
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(logger, thunk)));
+```
+
+- Usage example:
+
+```js
+export const saveResult = result => {
+  return {
+    type: STORE_RESULT,
+    result
+  }
+}
+
+export const storeResult = res => {
+  return dispatch => {
+    setTimeout(() => {
+      dispatch(saveResult(res))
+    }, 2000);
+  }
+};
+```
+
+### Where should we transform data before storing into state Redux store? Reducers or Action Creators?
